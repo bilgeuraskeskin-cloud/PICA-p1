@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>PICA</title>
+<script>window.MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]},svg:{fontCache:'global'},startup:{typeset:false}}</script>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#000;--panel:#0a0a0a;--panel2:#121212;--line:#262626;--ink:#f2f2f2;--muted:#8a8a8a;--gold:#f4f4f4;--gold2:#a0a0a0;--dark-ink:#000;color-scheme:dark;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{height:100%;margin:0;background:#000;color:var(--ink);font:400 16px/1.5 'Manrope',system-ui,sans-serif}
+.app{height:100%;max-width:780px;margin:0 auto;display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:12px;padding:14px 16px 8px}
+.orb{border-radius:50%;background:radial-gradient(circle at 32% 28%,#fff6e6 0%,var(--gold) 30%,var(--gold2) 62%,#2a1a0b 100%);position:relative;flex:none;box-shadow:0 0 28px rgba(232,184,115,.35)}
+.orb::before,.orb::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:1.5px solid var(--gold);opacity:0}
+.sm{width:42px;height:42px}
+.who{flex:1;min-width:0}
+.who h1{margin:0;font:700 21px 'Sora',sans-serif;letter-spacing:3px}
+.who p{margin:0;font-size:12.5px;color:var(--muted)}
+.pill{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:8px 14px;font:600 13px 'Manrope',sans-serif;cursor:pointer;white-space:nowrap}
+.pill:hover{border-color:var(--gold);color:var(--gold)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:6px 16px 10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--panel);color:#d9d4ca;border-radius:12px;padding:9px 14px;font:500 14px 'Manrope',sans-serif;cursor:pointer}
+.chip:hover{border-color:var(--gold);color:var(--gold)}
+#chat{flex:1;overflow-y:auto;padding:8px 16px 16px;display:flex;flex-direction:column;gap:12px}
+.m{max-width:86%;padding:12px 16px;border-radius:18px;animation:in .3s ease-out}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.ai{align-self:flex-start;background:var(--panel);border:1px solid var(--line);border-top-left-radius:4px}
+.me{align-self:flex-end;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--dark-ink);font-weight:500;border-top-right-radius:4px}
+.nm{display:block;font:600 11px 'Sora',sans-serif;letter-spacing:1.5px;color:var(--gold);margin-bottom:3px;text-transform:uppercase}
+a.btn{display:inline-block;margin:10px 8px 0 0;padding:9px 16px;border-radius:12px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--dark-ink);text-decoration:none;font-weight:700;font-size:14px}
+a.btn.alt{background:transparent;color:var(--gold);border:1px solid var(--gold2)}
+pre{margin:10px 0 0;background:#000;border:1px solid var(--line);border-radius:12px;padding:10px 12px;overflow-x:auto;font-size:13px;color:var(--gold)}
+code.pw{background:#000;border:1px solid var(--line);padding:5px 11px;border-radius:8px;font-size:17px;letter-spacing:1px;color:var(--gold)}
+.cp{margin-top:8px;border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:4px 11px;font-size:12px;cursor:pointer}
+.dots span{display:inline-block;width:7px;height:7px;margin:0 2px;border-radius:50%;background:var(--gold);animation:b 1s infinite}
+.dots span:nth-child(2){animation-delay:.15s}.dots span:nth-child(3){animation-delay:.3s}
+@keyframes b{0%,60%,100%{transform:translateY(0);opacity:.35}30%{transform:translateY(-4px);opacity:1}}
+.bar{display:flex;gap:8px;align-items:center;margin:0 12px 12px;padding:6px;background:var(--panel);border:1px solid var(--line);border-radius:22px}
+.bar:focus-within{border-color:var(--gold2)}
+.bar input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:16px 'Manrope',sans-serif;padding:8px 6px;outline:none}
+.bar input::placeholder{color:var(--muted)}
+.ib{width:44px;height:44px;border-radius:16px;border:0;display:grid;place-items:center;cursor:pointer;flex:none;background:var(--panel2);color:var(--ink)}
+#mic.on{background:var(--gold);color:var(--dark-ink)}
+#send{background:var(--ink);color:#000}
+#vc{width:auto;padding:0 14px;gap:8px;display:flex;align-items:center;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--dark-ink);font:700 13px 'Manrope',sans-serif}
+svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* durumlar */
+body[data-s=listen] .orb::before{border-color:#fff;animation:ring 1.3s ease-out infinite}
+body[data-s=talk] .orb::before{animation:ring 1.5s ease-out infinite}
+body[data-s=talk] .orb::after{animation:ring 1.5s ease-out .6s infinite}
+body[data-s=think] .orb{animation:pulse 1s ease-in-out infinite}
+@keyframes ring{0%{transform:scale(.95);opacity:.8}100%{transform:scale(1.5);opacity:0}}
+@keyframes pulse{50%{transform:scale(.9);filter:brightness(.8)}}
+/* sesli sohbet ekranı */
+.ov{position:fixed;inset:0;z-index:20;background:radial-gradient(90% 60% at 50% 35%,#1a1a1a 0%,#000 70%);display:none;flex-direction:column;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 28px) 24px calc(env(safe-area-inset-bottom,0px) + 28px);text-align:center}
+.ov.on{display:flex}
+.big{width:min(52vw,220px);height:min(52vw,220px);margin-top:6vh;cursor:pointer}
+.big::before,.big::after{inset:-10px}
+#vname{font:600 13px 'Sora',sans-serif;letter-spacing:3px;color:var(--gold);text-transform:uppercase}
+#vstat{font:600 22px 'Sora',sans-serif;margin:6px 0 14px}
+#cap{max-width:560px;max-height:30vh;overflow-y:auto;color:#cfc9be;font-size:16px}
+#cap b{display:block;color:var(--muted);font-weight:500;font-size:14px;margin-bottom:8px}
+.end{border:0;border-radius:999px;background:#2a1212;color:#ff8a80;border:1px solid #5a2323;padding:14px 34px;font:700 15px 'Manrope',sans-serif;cursor:pointer}
+/* ses seçici */
+.sheet{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.7);display:none;align-items:flex-end;justify-content:center}
+.sheet.on{display:flex}
+.sp{width:100%;max-width:560px;background:var(--panel);border:1px solid var(--line);border-radius:24px 24px 0 0;padding:20px 16px calc(env(safe-area-inset-bottom,0px) + 18px)}
+.sp h2{margin:0 0 4px;font:700 18px 'Sora',sans-serif}.sp>p{margin:0 0 14px;color:var(--muted);font-size:13.5px}
+.vc{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:12px;margin-bottom:8px;background:var(--panel2);border:1px solid var(--line);border-radius:16px;color:var(--ink);cursor:pointer;font:inherit}
+.vc.sel{border-color:var(--gold)}
+.vc .av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font:700 16px 'Sora',sans-serif;color:var(--dark-ink);background:linear-gradient(135deg,var(--gold),var(--gold2))}
+.vc b{display:block;font-family:'Sora',sans-serif}.vc small{color:var(--muted)}
+body{font-size:17px}
+*{font-family:'Rajdhani',sans-serif!important}
+h1,h2,#vname,#vstat,.nm,.pill,a.btn,.end,.cp,.chip,#vc{font-family:'Orbitron',sans-serif!important}
+.pill,.chip,.cp,a.btn,.end,#vc{font-size:11px!important;letter-spacing:1.2px;text-transform:uppercase}
+.who h1{font-size:20px!important}
+.app{position:relative;z-index:1}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:none}
+header{border-bottom:1px solid var(--line);padding-bottom:12px}
+.pill{border-radius:2px;border-color:var(--gold2);color:var(--gold)}
+.chip{border-radius:2px;color:var(--gold);background:color-mix(in srgb,var(--gold) 7%,transparent)}
+.m{border-radius:4px!important}
+.ai{border-left:3px solid var(--gold);background:rgba(14,14,14,.92)}
+.me{background:color-mix(in srgb,var(--gold) 15%,transparent);color:var(--ink);border:1px solid var(--gold2);font-weight:600}
+.bar{border-radius:6px;border-color:var(--gold2);box-shadow:0 0 18px color-mix(in srgb,var(--gold) 12%,transparent)}
+.ib{border-radius:4px}
+#send{background:transparent;color:var(--gold);border:1px solid var(--gold2)}
+.orb{background:radial-gradient(circle,#eaffff 0 9%,var(--gold) 10% 24%,#111 25% 38%,transparent 39%),repeating-conic-gradient(var(--gold) 0 7deg,transparent 7deg 30deg);border:2px solid var(--gold);box-shadow:0 0 30px color-mix(in srgb,var(--gold) 50%,transparent),inset 0 0 18px color-mix(in srgb,var(--gold) 45%,transparent);animation:spin 18s linear infinite}
+.big{outline:1px dashed rgba(61,224,255,.55);outline-offset:16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+#pv{display:none;align-items:center;gap:10px;margin:0 12px 8px;padding:8px;border:1px solid var(--gold2);border-radius:6px;background:var(--panel);font-size:15px;color:var(--muted)}
+#pv.on{display:flex}#pv img{width:44px;height:44px;object-fit:cover;border-radius:4px}#pv span{flex:1}
+#pvx{background:none;border:0;color:var(--gold);font-size:18px;cursor:pointer}
+.m img{max-width:100%;border-radius:4px;display:block;margin-bottom:8px}
+@media(max-width:520px){.vt{display:none}#vc{padding:0;width:44px;justify-content:center}}
+.m{overflow-x:auto}mjx-container{max-width:100%;overflow-x:auto;overflow-y:hidden;color:var(--ink)}mjx-container[display=true]{margin:10px 0!important}
+.sp{max-height:80vh;overflow-y:auto}
+.who{text-align:center}#hero{text-align:center;padding-top:4px}#hero .big{width:128px;height:128px;margin:14px auto 18px;transition:all .4s}body.chatting #hero .big{width:62px;height:62px;margin:6px auto 12px;outline-offset:8px}body.chatting #hero #clk{display:none}#hero #clk{text-align:center}
+.sr{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:14px 0}.sr label{flex:1}.sr input[type=range]{width:50%;accent-color:var(--gold)}.sr input[type=checkbox]{width:22px;height:22px;accent-color:var(--gold)}.sr select,.sr input[type=text]{background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:4px;padding:8px;font-size:16px;max-width:55%}
+.sw{width:32px;height:32px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0}.sw.on{border-color:#fff}
+.trow{flex-wrap:wrap}
+.art{background:#111;border:1px solid var(--line);width:100%}
+.tk{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--line);border-radius:4px;margin-bottom:8px;background:var(--panel2)}.tk span{flex:1}.tk.done span{text-decoration:line-through;color:var(--muted)}.tk button{background:none;border:0;color:var(--muted);font-size:16px;cursor:pointer}
+.trow{display:flex;gap:8px;margin-top:10px}.trow input{flex:1;min-width:0;background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:4px;padding:10px;font-size:16px}
+#clk{text-align:right;line-height:1.15;color:var(--gold)}#clk small{display:block;font-size:12px;color:var(--muted)}#ck{font-family:'Orbitron',sans-serif!important;font-size:15px}
+#boot{position:fixed;inset:0;z-index:60;background:#000;display:grid;place-items:center;transition:opacity .5s}
+#bt{font-family:'Orbitron',sans-serif!important;font-size:12px;letter-spacing:2px;line-height:2;color:var(--gold);text-align:left}
+</style>
+</head>
+<body data-s="idle"><div id="boot"><div id="bt"></div></div>
+<div class="app">
+  <header>
+    <button class="pill" id="setb">Ayarlar</button>
+    <div class="who"><h1>PICA</h1><p id="status">Sistemler hazır</p></div>
+    <button class="pill" id="vbtn">Görevler</button>
+  </header>
+  <div id="hero"><div class="orb big" id="heroorb"></div><div id="clk"><b id="ck"></b><small id="cd"></small></div></div>
+  <div class="chips" id="chips"></div>
+  <div id="chat"></div>
+  <div id="pv"><img id="pvi" alt=""><span>Fotoğraf hazır. Bir şey sor ya da gönder.</span><button id="pvx" aria-label="Kaldır">✕</button></div>
+  <div class="bar">
+    <button class="ib" id="mic" aria-label="Yazdır"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+    <button class="ib" id="att" aria-label="Fotoğraf ekle"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 16l-5-5-8 8"/></svg></button><input type="file" id="file" accept="image/*" hidden><input id="inp" placeholder="PICA'ya yaz…" autocomplete="off">
+    <button class="ib" id="vc" aria-label="Sesli sohbet"><svg viewBox="0 0 24 24"><path d="M4 10v4M8 6v12M12 3v18M16 7v10M20 10v4"/></svg><span class="vt">Sesli sohbet</span></button>
+    <button class="ib" id="send" aria-label="Gönder"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </div>
+</div>
+
+<div class="ov" id="ov">
+  <div><div id="vname">Elif</div><div class="orb big" id="bigorb"></div></div>
+  <div><div id="vstat">Dinliyorum…</div><div id="cap"></div></div>
+  <button class="end" id="endv">Sohbeti bitir</button>
+</div>
+
+<div class="sheet" id="sheet"><div class="sp">
+  <h2>Görevlerim</h2><p>Dokunarak tamamla. PICA da bu listeyi bilir.</p>
+  <div id="vlist"></div><div class="trow"><input id="tin" placeholder="Yeni görev…"><button class="pill" id="tadd">Ekle</button></div>
+</div></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const chat=$('chat'),inp=$('inp');
+let ttsOn=true,rec=null,listening=false,voiceMode=false,busy=false,pendingEnd=false,spk=0,vIdx=0,voices=[];
+
+/* ---------- İsimli sesler ---------- */
+const P=[
+ {n:'PICA',d:'',pitch:1,rate:.96,slot:0,hi:'Merhaba, ben PICA. Sistemler hazır.'},
+ {n:'Deniz',d:'Sakin ve dengeli',pitch:.97,rate:.89,slot:1,hi:'Selam, ben Deniz. Acele yok, rahat rahat konuşuruz.'},
+ {n:'Mert',d:'Derin ve güven veren',pitch:.82,rate:.93,slot:0,hi:'Selam, ben Mert. Ne konuşmak istersin?'},
+ {n:'Ada',d:'Enerjik ve neşeli',pitch:1.16,rate:1.04,slot:1,hi:'Heey, ben Ada! Bugün neler yapıyoruz?'}
+];
+function score(v){const n=v.name.toLowerCase();let s=0;
+ if(/natural|neural|online/.test(n))s+=5;if(/enhanced|premium/.test(n))s+=4;if(/google/.test(n))s+=3;if(!v.localService)s+=1;return s}
+function loadVoices(){if(!('speechSynthesis' in window))return;
+ voices=speechSynthesis.getVoices().filter(v=>(v.lang||'').toLowerCase().startsWith('tr')).sort((a,b)=>score(b)-score(a))}
+if('speechSynthesis' in window){speechSynthesis.onvoiceschanged=loadVoices;loadVoices()}
+const cur=()=>P[vIdx];
+function curVoice(){return voices.length?voices[cur().slot%voices.length]:null}
+function renderList(){$('vlist').innerHTML='';P.forEach((p,i)=>{const b=document.createElement('button');b.className='vc'+(i===vIdx?' sel':'');
+ b.innerHTML=`<span class="av">${p.n[0]}</span><span><b>${p.n}</b><small>${p.d}</small></span>`;
+ b.onclick=()=>{vIdx=i;setVoiceUI();renderList();speak(p.hi)};$('vlist').appendChild(b)})}
+function setVoiceUI(){$('vname').textContent='PICA'}
+
+
+
+/* ---------- Konuşma ---------- */
+function setState(s){document.body.dataset.s=s;
+ $('status').textContent={idle:'Sistemler hazır',listen:'Dinleniyor…',talk:'Yanıtlıyor…',think:'Analiz ediliyor…'}[s];
+ $('vstat').textContent={idle:'Hazır',listen:'Dinliyorum…',talk:'Konuşuyor…',think:'Düşünüyorum…'}[s]}
+function finish(){setState('idle');if(pendingEnd){pendingEnd=false;endVoice();return}
+ if(voiceMode){busy=false;setTimeout(vListen,250)}}
+function speak(text){
+ const id=++spk;
+ if(!('speechSynthesis' in window)||(!ttsOn&&!voiceMode)){if(voiceMode)finish();return}
+ speechSynthesis.cancel();
+ const clean=text.replace(/\$\$[\s\S]*?\$\$/g,' ').replace(/\$[^$]*\$/g,' ').replace(/<[^>]*>/g,' ').replace(/\*+/g,'').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,'').replace(/\s+/g,' ').trim();
+ const parts=clean.split(/(?<=[.!?…:])\s+/).filter(Boolean);
+ if(!parts.length){finish();return}
+ const p=cur(),v=curVoice();
+ parts.forEach((s,i)=>{
+  const u=new SpeechSynthesisUtterance(s);u.lang='tr-TR';if(v)u.voice=v;
+  u.rate=p.rate*S.rate+(Math.random()-.5)*.05;
+  u.pitch=p.pitch*S.pitch+(s.endsWith('?')?.07:0)+(Math.random()-.5)*.05;
+  if(i===0)u.onstart=()=>{if(id===spk)setState('talk')};
+  if(i===parts.length-1){u.onend=u.onerror=()=>{if(id===spk)finish()}}
+  speechSynthesis.speak(u)})}
+function stopSpeak(){spk++;if('speechSynthesis' in window)speechSynthesis.cancel()}
+
+/* ---------- Mesajlar ---------- */
+const esc=t=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const fmt=t=>esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>');
+function addMe(t){document.body.classList.add('chatting');const d=document.createElement('div');d.className='m me';d.textContent=t;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
+ if(voiceMode)$('cap').innerHTML='<b>'+esc(t)+'</b>'}
+function addAi(t,o={},quiet){
+ const d=document.createElement('div');d.className='m ai';let x=`<span class="nm">PICA</span>`+fmt(t);
+ if(o.code)x+=`<br><code class="pw">${esc(o.code)}</code><br><button class="cp" onclick="copyTxt(this.previousElementSibling.previousElementSibling.textContent,this)">Kopyala</button>`;
+ if(o.pre)x+=`<pre><code>${esc(o.pre)}</code></pre><button class="cp" onclick="copyTxt(this.previousElementSibling.innerText,this)">Kopyala</button>`;
+ if(o.links)x+='<br>'+o.links.map(l=>`<a class="btn ${l.alt?'alt':''}" target="_blank" rel="noopener" href="${l.u}">${l.t}</a>`).join('');
+ d.innerHTML=x;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
+ if(voiceMode){$('cap').innerHTML+=fmt(t);if(o.links)pendingEnd=true}
+ try{window.MathJax&&MathJax.typesetPromise&&MathJax.typesetPromise([d,$('cap')]).then(()=>{chat.scrollTop=chat.scrollHeight})}catch(e){}
+ if(!quiet)speak(t)}
+function reply(t,o){
+ const d=document.createElement('div');d.className='m ai dots';d.innerHTML='<span></span><span></span><span></span>';
+ chat.appendChild(d);chat.scrollTop=chat.scrollHeight;setState('think');
+ setTimeout(()=>{d.remove();addAi(t,o)},450+Math.min(t.length*5,800))}
+function copyTxt(t,b){navigator.clipboard&&navigator.clipboard.writeText(t).catch(()=>{});b.textContent='Kopyalandı';setTimeout(()=>b.textContent='Kopyala',1800)}
+
+/* ---------- Eylemler ---------- */
+const WA='https://api.whatsapp.com/send?text='+encodeURIComponent('Selam! Pica üzerinden yazıyorum, nasılsın?');
+function doWa(){reply('Tamam, WhatsApp hazır. Aşağıdaki butona dokun, kişiyi orada seçersin.',{links:[{t:"WhatsApp'ı aç",u:WA},{t:'WhatsApp Web',u:'https://web.whatsapp.com/',alt:1}]})}
+function doCall(){reply('Elbette. Normal arama mı yapalım, yoksa WhatsApp üzerinden mi?',{links:[{t:'Telefonu aç',u:'tel:'},{t:'WhatsApp',u:'https://wa.me/',alt:1}]})}
+function doPass(){const c='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%&*',a=new Uint32Array(16);crypto.getRandomValues(a);
+ reply('Senin için güçlü bir şifre hazırladım. Bir yere not et ya da kopyala.',{code:[...a].map(n=>c[n%c.length]).join('')})}
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const jokes=['İki bilgisayar karşılaşmış. Biri demiş ki: "Sende virüs var galiba?" Diğeri: "Yok canım, sadece güncellemeyi sindiriyorum."','Yazılımcı neden hep karanlıkta çalışır? Çünkü ışık hata ayıklamayı bozuyor.','Format atılan bilgisayara ne demişler? Hoş geldin, temiz sayfa.'];
+const riddles=['Elektrikle beslenirim, bilgiyle büyürüm, uzaktaki insanı yanına getiririm. Ben neyim? İpucu: şu an ona bağlısın.','Gözüm yok ama görürüm, hafızam var ama unutmam. Ben neyim?'];
+const T={oyun:'Oyun dendi mi heveslenirim. Valorant ya da CS2 oynuyorsan en büyük fark, nişangâhı hep kafa hizasında tutmaktan gelir. Ateş etmeden önce de tamamen durmayı dene. Hangi oyunda rank kasıyorsun?',
+ hw:'Bilgisayar toplamak güzel iştir. Oyun için işlemcide Ryzen 7 7800X3D hâlâ çok iyi bir tercih. Ekran kartını bütçene göre seçersin. Bütçen ne kadar, birlikte bakalım mı?',
+ muz:'Müzik konuşmaya bayılırım. Trap beat yapıyorsan 808 ile kick birbirinin yerini çalmasın diye sidechain kullan. Gitarda ise pentatonik gamla başlamak hem kolay hem tatmin edici. Hangisiyle uğraşıyorsun?',
+ kod:'Yazılımda en önemli şey, kodu küçük ve anlaşılır parçalara bölmek. Veri ve yapay zekâ için Python, web için JavaScript güzel bir başlangıç. İşte basit bir örnek.',
+ tdk:'Türkçenin kelime hazinesi gerçekten büyüleyici. Feraset, mütevazı, tezahür ve girift kelimelerinin her biri ayrı bir incelik taşır. Hangi kelimenin anlamını merak ediyorsun?'};
+const sample='async function selamla(isim) {\n  const mesaj = `Merhaba ${isim}!`;\n  console.log(mesaj);\n  return mesaj;\n}\nselamla("Dünya");';
+
+function handle(raw){
+ const t=raw.trim();if(!t&&!pending)return;stopSpeak();
+ if(pending){const img=pending,url=URL.createObjectURL(img);pending=null;$('pv').classList.remove('on');
+  const d=document.createElement('div');d.className='m me';d.innerHTML='<img src="'+url+'" alt="">';d.appendChild(document.createTextNode(t));chat.appendChild(d);chat.scrollTop=chat.scrollHeight;inp.value='';
+  if(!ai)return reply('Fotoğrafı görebilmem için yapay zekâ bağlantısı gerekiyor. Bu özellik claude.ai içindeki sayfada çalışıyor.');
+  return photo(t||'Bu fotoğrafta ne var? Kısaca anlat.',img)}
+ addMe(t);inp.value='';
+ const s=t.toLocaleLowerCase('tr'),w=s.split(/[^a-zçğıöşü0-9]+/);
+ const has=(...k)=>k.some(x=>w.includes(x)),inc=(...k)=>k.some(x=>s.includes(x));
+ if(inc('whatsapp','mesaj at','mesaj gönder','mesaj yolla')||has('wp'))return doWa();
+ if(has('ara','alo')||inc('arama yap','telefon aç','çağrı'))return doCall();
+ if(inc('şifre üret','şifre oluştur','şifre ver'))return doPass();
+ if(ai&&/(çiz|resim yap|görsel|logo|illüstrasyon|poster|fotoğraf oluştur|fotoğraf yap)/.test(s))return makeArt(t,0);
+ if(ai&&/(animasyon|video|hareketli)/.test(s))return makeArt(t,1);
+ if(ai)return think(t);
+ if(has('selam','merhaba','naber','nasılsın','sa','merhabalar'))return reply(pick(['Merhaba, hoş geldin! Bugün nasıl gidiyor? Mesaj atabilirim, birini arayabilirim ya da sadece sohbet ederiz.','Selam! Seni görmek güzel. Ben iyiyim, sen nasılsın? Bugün neye ihtiyacın var?']));
+ if(inc('whatsapp','mesaj')||has('wp'))return doWa();
+ if(has('ara','arama','telefon','alo')||inc('çağrı'))return doCall();
+ if(inc('espri','şaka','güldür'))return reply('Hadi bir tane geliyor. '+pick(jokes));
+ if(inc('bilmece','bulmaca'))return reply('Tamam, düşün bakalım. '+pick(riddles));
+ if(inc('şifre'))return doPass();
+ if(inc('tdk','kelime','lügat','anlam','edebiyat'))return reply(T.tdk);
+ if(inc('valorant','oyun','fps','minecraft','cs2','rank'))return reply(T.oyun);
+ if(inc('donanım','ekran kartı','ryzen','oled')||has('pc'))return reply(T.hw);
+ if(inc('müzik','gitar','beat','trap')||has('rap'))return reply(T.muz);
+ if(inc('kod','yazılım','python','javascript','script'))return reply(T.kod,{pre:sample});
+ if(inc('teşekkür','sağ ol','sağol'))return reply('Rica ederim, ne demek. Başka bir şey lazım olursa buradayım.');
+ if(inc('adın ne','kimsin'))return reply('Ben PICA, senin sesli asistanın. İstersen sesimi sağ üstten değiştirebilirsin.');
+ reply(pick(['Seni dinliyorum. Biraz daha anlatır mısın?','Hmm, bunu biraz daha açar mısın? Sana en iyi şekilde yardım etmek istiyorum.','Güzel bir konu. Önce sen ne düşündüğünü anlat, sonra ben de katkı yapayım.']))}
+
+/* ---------- Gerçek yapay zekâ beyni ---------- */
+let ai=null,dl=null,pending=null;const hist=[];let notes=[];try{notes=JSON.parse(localStorage.getItem('pica_notes')||'[]')}catch(e){}
+(async()=>{try{if(window.claude&&claude.use)ai=await claude.use('sample');dl=await claude.use('downloads')}catch(e){}})();
+const SYS="Sen PICA'sın: sıcak, zeki, esprili bir Türkçe sesli asistan. Her alanda geniş ve derin bilgiye sahipsin (bilim, matematik, tarih, teknoloji, kodlama, sanat, edebiyat, felsefe, dil, ekonomi, sağlık ve hukukta genel bilgi, yazarlık, analiz, çeviri) ve en zor soruları bile kendinden emin ama dürüst biçimde yanıtlarsın; konuyu bilen bir uzman gibi net, doğru ve derinlikli anlatırsın. Kullanıcıyla yakın bir arkadaş gibi, doğal ve akıcı konuş. Cevapların sesli okunacak: basit sorulara 1-3 kısa cümleyle, bilgi, açıklama, analiz ya da yazı isteyen sorulara kapsamlı ve doğru yanıt ver; emoji ve markdown yıldızı kullanma, gerekirse düzenli paragraflar yaz. Matematik ve ayrıntı istenen sorularda adım adım, gerektiği kadar uzun yaz: formülleri LaTeX ile satır içi $...$ ve ayrı satırda $$...$$ biçiminde yaz (başka LaTeX işaretleri kullanma), ara işlemleri dikkatle yap, sonucu ikinci kez doğrula ve son cümlede sonucu sözle de söyle. Sayısal işlemlerde hesapla aracını kullan. Kullanıcının adı, tercihleri gibi kalıcı bilgileri hafiza_kaydet aracıyla kaydet; görev isterse gorev_ekle kullan. Kişiliğin: sıcak, hafif esprili, kullanıcıyı adıyla anan, onu tanıdıkça samimileşen biri. Detay istenirse biraz uzat ama sade kal. Kod istenirse tek bir ``` bloğu ver ve açıklamayı kısa tut. Bilmediğini uydurma, açıkça söyle. Güncel bilgilere (internet, haber, hava durumu) erişimin yok; bilgin belirli bir tarihe kadar, güncel olabilecek konularda bunu kısaca belirt. Fotoğraf gönderilirse dikkatle inceleyip yardımcı ol. Saat, hesap, zamanlayıcı ve not işleri için sana verilen araçları kullan. WhatsApp mesajı ve arama işini sayfadaki butonlar yapar; kullanıcı isterse 'mesaj at' veya 'ara' demesini söyle.";
+const ld=k=>{try{return JSON.parse(localStorage.getItem(k)||'[]')}catch(e){return[]}},sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+let mem=ld('pica_mem'),tasks=ld('pica_tasks');
+const MATH=/\d\s*[\^=+*\/x×÷-]\s*\d|integral|türev|limit|denklem|çöz|olasılık|matris|geometri|hesapla|ispat|logaritma|yüzde|problem/i;
+function memStr(){const g=tasks.filter(x=>!x.d).map(x=>x.t);return (mem.length?'\n\nKullanıcı hakkında hatırladıkların: '+mem.join('; ')+'.':'')+(g.length?'\nAçık görevleri: '+g.join('; ')+'.':'')+(S.name?'\nKullanıcının adı: '+S.name+'. Ona adıyla hitap et.':'')+'\nCevap uzunluğu tercihi: '+S.len+'. Kişilik tonu: '+S.tone+'.'+'\nŞu an: '+new Date().toLocaleString('tr-TR')+(voiceMode?'\n(Sesli sohbet: kısa, konuşma diline uygun cevap ver, formül yazma, işlemi sözle anlat.)':'')}
+function renderTasks(){const l=$('vlist');l.innerHTML='';if(!tasks.length)l.innerHTML='<p style="color:var(--muted)">Henüz görev yok. PICA\'ya "yarın için şunu ekle" diyebilirsin.</p>';
+ tasks.forEach((x,i)=>{const r=document.createElement('label');r.className='tk'+(x.d?' done':'');r.innerHTML='<input type="checkbox"'+(x.d?' checked':'')+'><span></span><button>✕</button>';r.querySelector('span').textContent=x.t;
+  r.querySelector('input').onchange=e=>{x.d=e.target.checked?1:0;sv('pica_tasks',tasks);renderTasks()};
+  r.querySelector('button').onclick=e=>{e.preventDefault();tasks.splice(i,1);sv('pica_tasks',tasks);renderTasks()};l.appendChild(r)})}
+$('vbtn').onclick=()=>{renderTasks();$('sheet').classList.add('on')};
+$('sheet').onclick=e=>{if(e.target.id==='sheet')$('sheet').classList.remove('on')};
+$('tadd').onclick=()=>{const v=$('tin').value.trim();if(!v)return;tasks.push({t:v,d:0});sv('pica_tasks',tasks);$('tin').value='';renderTasks()};
+const tick=()=>{const n=new Date();$('ck').textContent=n.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});$('cd').textContent=n.toLocaleDateString('tr-TR',{day:'numeric',month:'short',weekday:'short'})};tick();setInterval(tick,20000);
+(()=>{const L=['PICA ÇEKİRDEĞİ BAŞLATILIYOR','HAFIZA MODÜLÜ ......... TAMAM','SES SİSTEMİ ............ TAMAM','MATEMATİK MOTORU ....... TAMAM','SİSTEMLER HAZIR'];let i=0;const b=$('boot'),t=$('bt'),n=setInterval(()=>{if(i<L.length)t.innerHTML+=L[i++]+'<br>';else{clearInterval(n);b.style.opacity=0;setTimeout(()=>b.remove(),500)}},260)})();
+let S=Object.assign({theme:0,rate:1,pitch:1,len:'normal',tone:'samimi',name:'',tts:1},(()=>{try{return JSON.parse(localStorage.getItem('pica_set')||'{}')}catch(e){return{}}})());
+ttsOn=!!S.tts;
+const saveS=()=>{try{localStorage.setItem('pica_set',JSON.stringify(S))}catch(e){}};
+const TH=[['#f4f4f4','#a0a0a0','#262626'],['#e8b873','#b8854b','#3a2c17'],['#4dffa0','#1f9d62','#103d29'],['#ff5d5d','#b83232','#40161a'],['#b48cff','#7a4fd1','#2d1d4d'],['#3de0ff','#1a8fb8','#12384f']];
+const st=document.createElement('div');st.className='sheet';st.id='set';
+st.innerHTML=`<div class='sp'><h2>Ayarlar</h2><p>Burada PICA'yı kendine göre ayarlarsın.</p>
+<div class='sr'><label>Adın</label><input type='text' id='sname' placeholder='Sana nasıl seslenelim?'></div>
+<div class='sr'><label>Renk teması</label><div id='sws' style='display:flex;gap:8px'></div></div>
+<div class='sr'><label>Sesli yanıt</label><input type='checkbox' id='stts'></div>
+<div class='sr'><label>Konuşma hızı</label><input type='range' id='srate' min='.7' max='1.3' step='.05'></div>
+<div class='sr'><label>Ses tonu</label><input type='range' id='spitch' min='.8' max='1.2' step='.05'></div>
+<div class='sr'><label>Cevap uzunluğu</label><select id='slen'><option value='kısa'>Kısa</option><option value='normal'>Normal</option><option value='detaylı'>Detaylı</option></select></div>
+<div class='sr'><label>Kişilik</label><select id='stone'><option value='samimi'>Samimi</option><option value='esprili'>Esprili</option><option value='ciddi'>Ciddi</option></select></div>
+<div class='trow'><button class='pill' id='stest'>Sesi dene</button><button class='pill' id='smem'>Hafızayı sil</button><button class='pill' id='sclr'>Sohbeti temizle</button></div></div>`;
+document.body.appendChild(st);
+function applyTheme(){const t=TH[S.theme]||TH[0],r=document.documentElement.style;r.setProperty('--gold',t[0]);r.setProperty('--gold2',t[1]);r.setProperty('--line',t[2]);document.querySelectorAll('.sw').forEach((s,i)=>s.classList.toggle('on',i===S.theme))}
+TH.forEach((t,i)=>{const b=document.createElement('button');b.className='sw';b.style.background=t[0];b.setAttribute('aria-label','Tema '+(i+1));b.onclick=()=>{S.theme=i;applyTheme();saveS()};$('sws').appendChild(b)});
+applyTheme();
+$('sname').value=S.name;$('stts').checked=!!S.tts;$('srate').value=S.rate;$('spitch').value=S.pitch;$('slen').value=S.len;$('stone').value=S.tone;
+$('sname').oninput=e=>{S.name=e.target.value.trim();saveS()};
+$('stts').onchange=e=>{S.tts=e.target.checked?1:0;ttsOn=!!S.tts;if(!ttsOn&&'speechSynthesis' in window)speechSynthesis.cancel();saveS()};
+$('srate').oninput=e=>{S.rate=+e.target.value;saveS()};
+$('spitch').oninput=e=>{S.pitch=+e.target.value;saveS()};
+$('slen').onchange=e=>{S.len=e.target.value;saveS()};
+$('stone').onchange=e=>{S.tone=e.target.value;saveS()};
+$('stest').onclick=()=>{const o=ttsOn;ttsOn=true;speak('Merhaba'+(S.name?' '+S.name:'')+', sesim böyle. Nasıl, beğendin mi?');ttsOn=o};
+$('smem').onclick=()=>{mem=[];sv('pica_mem',mem);st.classList.remove('on');addAi('Hafızamı sildim, seni baştan tanıyalım.',{},1)};
+$('sclr').onclick=()=>{st.classList.remove('on');stopSpeak();chat.innerHTML='';hist.length=0;document.body.classList.remove('chatting');addAi('Sohbeti temizledim.',{},1)};
+$('setb').onclick=()=>st.classList.add('on');
+st.onclick=e=>{if(e.target===st)st.classList.remove('on')};
+$('heroorb').onclick=startVoice;
+const TOOLS=[
+ {name:'saat_tarih',description:'Şu anki tarih ve saati verir',execute:()=>new Date().toLocaleString('tr-TR',{dateStyle:'full',timeStyle:'short'})},
+ {name:'hesapla',description:'Matematik ifadesini hesaplar, örn 12*(3+4)',inputSchema:{type:'object',properties:{ifade:{type:'string'}},required:['ifade']},execute:({ifade})=>{if(!/^[0-9+\-*/().,%\s^]+$/.test(ifade))throw new Error('geçersiz ifade');return String(Function('"use strict";return ('+ifade.replace(/,/g,'.').replace(/\^/g,'**')+')')())}},
+ {name:'zamanlayici',description:'Verilen saniye sonra kullanıcıya sesli haber verir',inputSchema:{type:'object',properties:{saniye:{type:'number'},ad:{type:'string'}},required:['saniye']},execute:({saniye,ad})=>{const s=Math.min(Math.max(+saniye||1,1),86400);setTimeout(()=>{try{navigator.vibrate&&navigator.vibrate([300,150,300])}catch(e){}addAi('Süre doldu'+(ad?': '+ad:'')+'.')},s*1000);return 'kuruldu, '+s+' saniye'}},
+ {name:'not_ekle',description:'Kullanıcının notunu kaydeder',inputSchema:{type:'object',properties:{metin:{type:'string'}},required:['metin']},execute:({metin})=>{notes.push(metin);try{localStorage.setItem('pica_notes',JSON.stringify(notes))}catch(e){}return 'kaydedildi'}},
+ {name:'notlari_oku',description:'Kayıtlı notları listeler',execute:()=>notes.length?notes.join(' | '):'Hiç not yok'},
+ {name:'hafiza_kaydet',description:'Kullanıcı hakkında kalıcı bir bilgiyi (ad, tercih, hedef) hatırlamak için kaydeder',inputSchema:{type:'object',properties:{bilgi:{type:'string'}},required:['bilgi']},execute:({bilgi})=>{mem.push(bilgi);if(mem.length>40)mem.shift();sv('pica_mem',mem);return 'hatırlayacağım'}},
+ {name:'gorev_ekle',description:'Görev listesine madde ekler',inputSchema:{type:'object',properties:{metin:{type:'string'}},required:['metin']},execute:({metin})=>{tasks.push({t:metin,d:0});sv('pica_tasks',tasks);return 'eklendi'}},
+ {name:'gorev_listele',description:'Görevleri numaralı listeler',execute:()=>tasks.length?tasks.map((x,i)=>(i+1)+'. '+x.t+(x.d?' (bitti)':'')).join(' | '):'Görev yok'},
+ {name:'gorev_bitir',description:'Numarası verilen görevi tamamladı olarak işaretler',inputSchema:{type:'object',properties:{no:{type:'number'}},required:['no']},execute:({no})=>{const x=tasks[no-1];if(!x)throw new Error('yok');x.d=1;sv('pica_tasks',tasks);return 'tamamlandı'}}
+];
+function shrink(f){return new Promise(res=>{const im=new Image();im.onload=()=>{const k=Math.min(1,1280/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);c.toBlob(b=>res(b),'image/jpeg',.85)};im.src=URL.createObjectURL(f)})}
+$('att').onclick=()=>$('file').click();
+$('file').onchange=async e=>{const f=e.target.files[0];if(!f)return;pending=await shrink(f);$('pvi').src=URL.createObjectURL(pending);$('pv').classList.add('on');e.target.value=''};
+$('pvx').onclick=()=>{pending=null;$('pv').classList.remove('on')};
+async function photo(t,img){try{const L=ai.limits?await ai.limits():{images:true};if(!L.images)return reply('Bu görünümde fotoğraf analizi kapalı.')}catch(e){}think(t,img)}
+async function saveChat(){if(!dl)return addAi('Kaydetme bu görünümde kapalı.',{},1);const txt=[...chat.querySelectorAll('.m:not(.dots)')].map(m=>(m.classList.contains('me')?'Ben: ':'PICA: ')+m.innerText.replace(/^PICA\n/,'')).join('\n\n');try{await dl.save({filename:'pica-sohbet.txt',data:txt})}catch(e){}}
+async function makeArt(t,anim){
+ const d=document.createElement('div');d.className='m ai dots';d.innerHTML='<span></span><span></span><span></span>';chat.appendChild(d);chat.scrollTop=chat.scrollHeight;setState('think');
+ const p=(anim?'Aşağıdaki isteğe uygun, sürekli tekrar eden, akıcı ve etkileyici HAREKETLİ bir SVG sahnesi üret: CSS @keyframes veya SMIL animasyonu kullan, script kullanma.':'Aşağıdaki isteğe uygun, çok detaylı, estetik, profesyonel görünümlü bir SVG illüstrasyon üret: gradyanlar, gölgeler ve katmanlı şekiller kullan.')+' Sadece tek bir tam <svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg"> kodu ver; başka açıklama, markdown ya da kod bloğu yazma. Dış kaynak, script ve yazı tipi kullanma. İstek: '+t;
+ try{
+  const r=await ai(p,{cache:false,modelTier:'complex'});
+  const m=(r.text||'').match(/<svg[\s\S]*<\/svg>/i);if(!m)throw 0;
+  const svg=m[0].replace(/<script[\s\S]*?<\/script>/gi,'').replace(/<foreignObject[\s\S]*?<\/foreignObject>/gi,'').replace(/\son\w+\s*=\s*("[^"]*"|'[^']*')/gi,'');
+  d.remove();showArt(svg,t,anim);
+ }catch(e){d.remove();addAi('Bu sefer çizemedim, biraz farklı anlatır mısın?')}
+}
+function showArt(svg,t,anim){
+ const d=document.createElement('div');d.className='m ai';d.innerHTML='<span class="nm">PICA</span>'+(anim?'Animasyonu hazırladım (video değil, hareketli çizim):':'İşte çizimim:')+'<img class="art" alt=""><button class="cp">Kaydet</button> <button class="cp">Yeniden çiz</button>';
+ d.querySelector('img').src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+ const b=d.querySelectorAll('button');
+ b[0].onclick=async()=>{if(!dl)return;try{await dl.save({filename:'pica-'+(anim?'animasyon':'gorsel')+'.svg',data:svg})}catch(e){}};
+ b[1].onclick=()=>makeArt(t,anim);
+ chat.appendChild(d);chat.scrollTop=chat.scrollHeight;speak(anim?'Animasyonu hazırladım.':'Çizimim hazır.');
+}
+async function think(t,img){
+ hist.push({r:'Kullanıcı',c:(img?'[fotoğraf gönderdi] ':'')+t});while(hist.length>30)hist.shift();
+ const d=document.createElement('div');d.className='m ai dots';d.innerHTML='<span></span><span></span><span></span>';
+ chat.appendChild(d);chat.scrollTop=chat.scrollHeight;setState('think');
+ try{
+  const prompt=SYS+memStr()+'\n\nSohbet:\n'+hist.map(h=>h.r+': '+h.c).join('\n')+'\nPICA:';
+  const res=await ai(prompt,{cache:false,tools:TOOLS,modelTier:voiceMode?'quick':((img||MATH.test(t)||t.length>40)?'complex':'default'),...(img?{images:[img]}:{})});
+  let txt=(res.text||'').replace(/^PICA:\s*/,'').trim(),o={};
+  const m=txt.match(/```\w*\n?([\s\S]*?)```/);
+  if(m){o.pre=m[1].trim();txt=txt.replace(/```[\s\S]*?```/,'').trim()||'İşte kodun.'}
+  hist.push({r:'PICA',c:txt});d.remove();addAi(txt,o);
+ }catch(e){
+  d.remove();hist.pop();
+  if(e&&e.code==='rate_limited'){addAi('Biraz hızlı gittik, birkaç saniye sonra tekrar dener misin?')}
+  else{if(e&&e.code==='not_granted')ai=null;addAi('Şu an beynime ulaşamıyorum, ama yine de yardımcı olmaya çalışayım.',{},1);handle2(t)}
+ }
+}
+function handle2(t){const q=t.toLocaleLowerCase('tr');reply(pick(['Seni dinliyorum. Biraz daha anlatır mısın?','Güzel bir konu. Sen ne düşünüyorsun, önce sen anlat.']))}
+
+/* ---------- Dinleme ve sesli sohbet ---------- */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+function vListen(){if(!voiceMode||!rec||busy)return;try{rec.start()}catch(e){}}
+if(SR){rec=new SR();rec.lang='tr-TR';rec.interimResults=true;
+ rec.onstart=()=>{listening=true;$('mic').classList.add('on');if(voiceMode||!busy)setState('listen')};
+ rec.onresult=e=>{let tx='',fin=false;for(let i=e.resultIndex;i<e.results.length;i++){tx+=e.results[i][0].transcript;if(e.results[i].isFinal)fin=true}if(!fin){if(voiceMode)$('cap').innerHTML='<b>'+esc(tx)+'…</b>';return}busy=true;handle(tx)};
+ rec.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed'){endVoice();addAi('Mikrofon izni verilmediği için seni dinleyemiyorum. Tarayıcı ayarlarından izin verirsen devam ederiz.',{},1)}};
+ rec.onend=()=>{listening=false;$('mic').classList.remove('on');if(!busy&&document.body.dataset.s==='listen')setState('idle');if(voiceMode&&!busy)setTimeout(vListen,300)};
+ $('mic').onclick=()=>{stopSpeak();listening?rec.stop():(busy=false,rec.start())};
+}else $('mic').onclick=()=>addAi('Bu tarayıcı sesli dinlemeyi desteklemiyor, yazarak devam edebiliriz.',{},1);
+
+function startVoice(){
+ if(!rec){addAi('Bu tarayıcı sesli sohbeti desteklemiyor. Chrome veya Edge ile dener misin?',{},1);return}
+ voiceMode=true;busy=false;pendingEnd=false;$('cap').innerHTML='';$('ov').classList.add('on');setVoiceUI();
+ const g=cur().hi.split('.')[0]+'. Seni dinliyorum.';$('cap').innerHTML=fmt(g);busy=true;speak(g)}
+function endVoice(){voiceMode=false;busy=false;stopSpeak();try{rec&&rec.abort()}catch(e){}$('ov').classList.remove('on');setState('idle')}
+$('vc').onclick=startVoice;$('endv').onclick=endVoice;
+$('bigorb').onclick=()=>{stopSpeak();busy=false;try{rec.abort()}catch(e){}setTimeout(vListen,200)};
+
+/* ---------- Arayüz ---------- */
+const chips=[['WhatsApp',doWa,1],['Ara',doCall,1],['Espri','Bana bir espri yap'],['Bilmece','Bir bilmece sor'],['Şifre üret',doPass,1],['Oyun','Oyun taktiği ver'],['Donanım','Bilgisayar donanımı'],['Müzik','Müzik tavsiyesi'],['Kod','Kod örneği ver'],['TDK','TDK kelime'],['Fotoğraf',()=>$('att').click(),2],['Çevir','Bir metni çevirmek istiyorum, yardım eder misin?'],['Notlarım','Notlarımı oku'],['Plan yap','Bana bugün için bir plan hazırla'],['Saat','Saat kaç ve bugün günlerden ne?'],['Resim çiz','Bana gün battığında bir dağ evi çiz'],['Animasyon','Gezegenlerin dönen bir animasyonunu yap'],['Matematik','Bir matematik sorusu çözmeni istiyorum, nasıl yazayım?'],['Günüm','Görevlerime ve saate bakıp bana bugün için plan yap'],['Görevler',()=>$('vbtn').click(),2],['Kaydet',saveChat,2]];
+chips.forEach(c=>{const b=document.createElement('button');b.className='chip';b.textContent=c[0];
+ b.onclick=()=>{if(c[2]===1){addMe(c[0]);c[1]()}else if(c[2]===2)c[1]();else handle(c[1])};$('chips').appendChild(b)});
+$('send').onclick=()=>handle(inp.value);
+inp.addEventListener('keydown',e=>{if(e.key==='Enter')handle(inp.value)});
+addAi('Merhaba, ben PICA. Mesaj atabilirim, birini arayabilirim ya da sadece sohbet edebiliriz. Beni tanıdıkça hatırlarım, görevlerini tutarım, matematik sorularını adım adım çözerim. Dalga ikonuyla da doğrudan konuşabilirsin.',{},1);
+</script>
+</body>
+</html>
